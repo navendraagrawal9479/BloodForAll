@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   data: [],
+  blood: ''
 };
 
 const dataSlice = createSlice({
@@ -11,9 +12,13 @@ const dataSlice = createSlice({
     setData: (state, action) => {
       state.data.push(action.payload)
     },
+    setBlood: (state, action) => {
+      console.log(action.payload)
+      state.blood = action.payload
+    }
   },
 });
 
-export const { setData } = dataSlice.actions;
+export const { setData, setBlood } = dataSlice.actions;
 
 export default dataSlice.reducer;

@@ -3,27 +3,33 @@ import { Stack } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import { Button } from "@material-ui/core";
-import { useSelector } from "react-redux";
+import { collection, query, getDocs, where } from "firebase/firestore"
+import { db } from "./auth/firebase-config";
+import LoadingSpinner from "./auth/LoadingSpinner";
+import { useNavigate } from "react-router-dom";
 
-const Profile = ({ users }) => {
+const Profile = () => {
   const [userData,setUserData] = useState({});
-  let {user} = useSelector(state=>state.auth)
+  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
 
   useEffect(()=>{
     const userId = localStorage.getItem("userId");
-
-    if(!user){
-      const user = users.find((u) => {
-        return u.userId === userId;
-      });
-      setUserData(user)
-    }else{
-      setUserData(user)
+    const getUser = async () => {
+      setLoading(true)
+      const q = query(collection(db, "users"), where("userId", "==", userId))
+      const querySnapshot = await getDocs(q);
+      console.log("query", querySnapshot.docs[0]._document.data)
+      const data = querySnapshot.docs.map(u => ({...u.data()}))
+      setUserData(data[0])
+      setLoading(false)
     }
-    
-  })
 
-  console.log("profile", user);
+    getUser()
+    
+  }, [])
+
+  console.log("profile", userData);
 
   const date = userData?.lastDonated;
   if (date) {
@@ -31,6 +37,9 @@ const Profile = ({ users }) => {
     var dobArr = dob.toDateString().split(" ");
     var dobFormat = dobArr[2] + " " + dobArr[1] + " " + dobArr[3];
   }
+  if(loading)return <Box sx={{minHeight: '100vh'}} display='flex' flexDirection='column' alignItems='center' justifyContent="center">
+    <LoadingSpinner />
+  </Box>
 
   return (
     <>
@@ -91,36 +100,12 @@ const Profile = ({ users }) => {
             <span>{userData?.weight} kg</span>
           </Typography>
           <Typography>
-            <span style={{ color: "gray", fontWeight: "bold" }}>Age: </span>
-            <span>{userData?.age} years</span>
-          </Typography>
-          <Typography>
             <span style={{ color: "gray", fontWeight: "bold" }}>
               Last Donated Blood at:{" "}
             </span>
             <span>{date ? dobFormat : "N/A"}</span>
           </Typography>
         </Stack>
-        <Button
-          style={{
-            marginTop:'100px',
-            textTransform: "none",
-            fontWeight:'bold',
-            color:'#fff',
-            fontSize:'15px',
-            padding:'0.5rem 2rem',
-            backgroundColor:'#d20536',
-            marginTop: 1,
-            "&:hover": {
-              bgcolor: "#1fc22f",
-            },
-            "&:focus": {
-              bgcolor: "#18cd2a",
-            },
-          }}
-        >
-          Edit Details
-        </Button>
       </Box>
     </>
   );

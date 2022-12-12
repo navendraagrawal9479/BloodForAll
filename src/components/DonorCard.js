@@ -1,6 +1,6 @@
 import { Button, Card, CardContent, Typography } from "@mui/material";
 import { Link } from "@mui/material";
-import React from "react";
+import React, {useState} from "react";
 import emailjs from "@emailjs/browser";
 import CallIcon from "@mui/icons-material/Call";
 import ReplyIcon from "@mui/icons-material/Reply";
@@ -12,6 +12,7 @@ const DonorCard = (props) => {
     to_email: props.email,
     message: `A patient whose name is ${props.user.name} needs your blood and is ${props.distance} metres away from you. Please contact the patient if you are willing to donate blood. The phone number and Email ID of the patient is ${props.user.phone} and ${props.user.email}.`,
   };
+  const [sent, setSent] = useState(false)
 
   const sendEmail = () => {
     emailjs
@@ -24,6 +25,7 @@ const DonorCard = (props) => {
       .then(
         function (response) {
           console.log("SUCCESS!", response.status, response.text);
+          setSent(true)
         },
         function (error) {
           console.log("FAILED...", error);
@@ -32,13 +34,16 @@ const DonorCard = (props) => {
   };
 
   return (
-    <Card>
+    <Card elevation={3}>
       <CardContent sx={{ width: "250px", height: "230px" }}>
         <Typography variant="h5" sx={{ fontSize: "20px" }}>
           {props.name}
         </Typography>
         <Typography variant="h6" sx={{ fontWeight: "bold", color: "#d20536" }}>
           {props.bloodGroup}
+        </Typography>
+        <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+          Less than 5KM away.
         </Typography>
         <Button
           startIcon={<CallIcon style={{color:'#fff'}} />}
@@ -89,7 +94,7 @@ const DonorCard = (props) => {
           onClick={sendEmail}
           fullWidth
         >
-          Send Request
+          {!sent ? "Send Request" : "Request Sent"}
         </Button>
       </CardContent>
     </Card>

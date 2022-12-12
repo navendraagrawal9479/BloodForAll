@@ -27,6 +27,8 @@ import React from "react";
 import FormLayout from "../../Layouts/FormLayout";
 import { useSelector } from "react-redux";
 import { setUser } from "../../slices/authSlice";
+import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
+import { db } from "./firebase-config";
 
 const auth = getAuth(app);
 
@@ -112,25 +114,7 @@ const Register = (props) => {
   };
 
   const postData = async (user) => {
-    try {
-      setIsSubmitting(true);
-      const response = await fetch(
-        "https://blood-donor-9b76a-default-rtdb.firebaseio.com/users.json",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            user,
-          }),
-        }
-      );
-      console.log(response)
-      if (!response.ok) {
-        throw new Error("Something Went Wrong.");
-      }
-      setIsSubmitting(false);
-    } catch (error) {
-      setIsSubmitting(false);
-    }
+    await addDoc(collection(db, "users"), user)
   };
 
   const onSubmit = (event) => {
@@ -144,7 +128,7 @@ const Register = (props) => {
       password: password,
       bloodGroup: bloodGroup,
       gender: gender,
-      age: age,
+      dob: age,
       weight: weight,
       lastDonated: date,
       infection: infectionValue,
@@ -152,8 +136,12 @@ const Register = (props) => {
       hasAids: aids,
       hasChildBirth: child,
     };
-    const findUser = props.users.find(u => {return u.phone === phone});
-    if(findUser){
+    const q = query(collection(db, "users"), where("phone", "==", phone))
+    const check = async () => {
+      const querySnapshot = await getDocs(q);
+      return !querySnapshot;
+    }
+    if(!check()){
       setErrorText('User already exists, please try another phone number.')
       return;
     }
@@ -370,17 +358,30 @@ const Register = (props) => {
               <MenuItem value="AB-">AB-</MenuItem>
             </Select>
           </FormControl>
-          <TextField
-            type="number"
-            label="Age"
+          <label htmlFor="lastBloodDonated">
+            Date of Birth:
+          </label>
+          <input
+            as={TextField}
+            type="date"
+            id="dob"
             value={age}
             onChange={(e) => {
               setAge(e.target.value);
             }}
-            placeholder="Please enter your Age"
-            required
+            placeholder="Please enter your Date of Birth"
             fullWidth
-            name="age"
+            name="dob"
+            min="1985-01-01"
+            max={new Date().toISOString().split("T")[0]}
+            style={{
+              width: "90%",
+              padding: "0.7rem 1.3rem",
+              paddingLeft: "0px",
+              fontSize: "15px",
+              border: "none",
+              borderRadius: "0.4rem",
+            }}
           />
           <TextField
             type="number"

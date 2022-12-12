@@ -31,6 +31,7 @@ const AboutCard = (props) => {
         alignItems: "center",
         justifyContent: "center",
       }}
+      elevation={3}
     >
       <CardMedia
         image={photo}

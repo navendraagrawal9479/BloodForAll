@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import Navbar from "./Navbar";
 import { useNavigate } from "react-router-dom";
 import slogans from "./slogans/slogans";
-import { Box, Typography } from "@material-ui/core";
+import { Box, Paper, Typography } from "@material-ui/core";
 import { Button } from "@material-ui/core";
 import AboutCard from "./AboutCard";
 import { Stack } from "@mui/system";
+import DonorsForFriend from "./DonorsForFriend";
 
 const HomePage = (props) => {
   const navigate = useNavigate();
+  const [donorForFriend, setDonorForFriend] = useState(false)
   const findUser = localStorage.getItem("userId");
   if (!findUser) {
     navigate("/");
@@ -56,19 +58,37 @@ const HomePage = (props) => {
             message="We provide immediate access to blood donors in case of emergencies."
           />
         </Stack>
-        <Button
-          style={{
-            color: "#fff",
-            backgroundColor: "#d20536",
-            margin: "15px 0",
-            fontWeight: "bold",
-          }}
-          onClick={() => {
-            navigate("/donors");
-          }}
-        >
-          Search for donors
-        </Button>
+        <Stack direction='row' gap={1} flexWrap='wrap' alignItems='center' justifyContent='center'>
+          <Button
+            style={{
+              color: "#fff",
+              backgroundColor: "#d20536",
+              margin: "15px 0",
+              fontWeight: "bold",
+            }}
+            onClick={() => {
+              navigate("/donors");
+            }}
+          >
+            Search for donors
+          </Button>
+          <Button
+            style={{
+              color: "#fff",
+              backgroundColor: "#d20536",
+              margin: "15px 0",
+              fontWeight: "bold",
+            }}
+            onClick={() => {
+              setDonorForFriend(prev => (!prev))
+            }}
+          >
+            Search donors for a Friend
+          </Button>
+        </Stack>
+        {donorForFriend && <Paper elevation={3} style={{padding: '20px'}}>
+          <DonorsForFriend />
+        </Paper>}
       </Box>
     </>
   );

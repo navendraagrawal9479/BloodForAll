@@ -3,7 +3,7 @@ import app from "./firebase-config";
 import LoadingSpinner from "./LoadingSpinner";
 import { useDispatch } from "react-redux";
 import { setUserId } from "../../slices/authSlice";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import LockIcon from "@mui/icons-material/Lock";
 import {
@@ -18,6 +18,8 @@ import React from "react";
 import FormLayout from "../../Layouts/FormLayout";
 import { useSelector } from "react-redux";
 import { setUser } from "../../slices/authSlice";
+import { collection, query, getDocs, where } from "firebase/firestore"
+import { db } from "./firebase-config";
 
 const auth = getAuth(app);
 
@@ -33,6 +35,18 @@ const Register = (props) => {
 
   const [errorText, setErrorText] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     const q = query(collection(db, "users"), where("userId", "==", userId))
+  //     const querySnapshot = await getDocs(q);
+  //     console.log("query", querySnapshot)
+  //   }
+  //   getData()
+  // }, [])
+  useEffect(() => {
+    localStorage.setItem('bloodGroup', user?.bloodGroup)
+  }, [user])
 
   const onSignInSubmit = () => {
     onCaptchaVerify();
@@ -88,39 +102,38 @@ const Register = (props) => {
       });
   };
 
-  const fetchData = () => {
+  const fetchData = async () => {
     setIsSubmitting(true);
-    const findUser = props.users.find((u) => {
-      return u.userId === userId;
-    });
-    dispatch(setUser(findUser))
-    if (!findUser) {
+    const q = query(collection(db, "users"), where("userId", "==", userId))
+    const querySnapshot = await getDocs(q);
+    const data = querySnapshot.docs.map(u => ({...u.data()}))
+    if (!querySnapshot) {
       setErrorText("account doesn't exists, please sign up.");
       return;
     } else {
       setErrorText("");
-      dispatch(setUser(findUser));
+      dispatch(setUser(data[0]))
       console.log(user);
     }
 
     setIsSubmitting(false);
   };
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
 
-    const getUser = localStorage.getItem("userId");
-    if (getUser) {
-      dispatch(setUserId(getUser));
-      const findUser = props.users.find((u) => {
-        return u.userId === getUser;
-      });
-      dispatch(setUser(findUser))
+    const q = query(collection(db, "users"), where("userId", "==", userId))
+    const querySnapshot = await getDocs(q);
+    
+    if (querySnapshot) {
+      const data = querySnapshot.docs.map(u => ({...u.data()}))
+      dispatch(setUser(data[0]))
+      console.log(user)
       navigate('/home');
       return;
     }
 
-    if (!verify && !getUser) {
+    if (!verify && !querySnapshot) {
       setErrorText("Please verify Mobile Number first");
       return;
     }
