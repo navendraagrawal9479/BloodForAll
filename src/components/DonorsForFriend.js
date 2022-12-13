@@ -1,5 +1,5 @@
 import { Box, Typography } from '@material-ui/core';
-import React, {useState} from 'react'
+import React from 'react'
 import {FormControl, MenuItem, Select, InputLabel} from '@material-ui/core';
 import {Button} from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,7 +12,7 @@ const DonorsForFriend = () => {
   const {blood} = useSelector(state => state.data)
   return (
     <div>
-      <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center' sx={{width: '90%', margin: '0 auto', marginTop: '20px'}}>
+      <Box display='flex' flexDirection='column' alignItems='center' justifyContent='center' sx={{width: {xs: '100%',md: '90%'}, margin: '0 auto', marginTop: '20px'}}>
         <Typography variant='h5' sx={{fontWeight: 'bold'}}>Enter the Blood Group of your Friend</Typography>
         <form onSubmit={(event) => {event.preventDefault()}}>
             <FormControl style={{width: '400px', marginTop: '30px'}} required>
@@ -48,7 +48,7 @@ const DonorsForFriend = () => {
                 fontWeight: "bold",
                 }}
                 onClick={() => {
-                    navigate('/donors')
+                    navigate('/donors-for-friend')
                 }}
             >
                 Search

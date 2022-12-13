@@ -10,7 +10,7 @@ const DonorCard = (props) => {
     from_name:props.user.name,
     name: props.name,
     to_email: props.email,
-    message: `A patient whose name is ${props.user.name} needs your blood and is ${props.distance} metres away from you. Please contact the patient if you are willing to donate blood. The phone number and Email ID of the patient is ${props.user.phone} and ${props.user.email}.`,
+    message: `A patient whose name is ${props.user.name} needs your blood. Please contact the patient if you are willing to donate blood. The phone number and Email ID of the patient is ${props.user.phone} and ${props.user.email}.`,
   };
   const [sent, setSent] = useState(false)
 

@@ -3,6 +3,7 @@ import React from "react";
 import blood_drop from "./images/blood_drop.png";
 import blood_bag from "./images/blood_bag.png";
 import hospital from "./images/hospital.png";
+import call from "./images/call.jpg";
 
 const AboutCard = (props) => {
   let photo;
@@ -17,6 +18,10 @@ const AboutCard = (props) => {
 
     case "hospital":
       photo = hospital;
+      break;
+
+    case "call":
+      photo = call
       break;
 
     default:

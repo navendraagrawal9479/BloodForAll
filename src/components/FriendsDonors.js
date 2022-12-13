@@ -8,11 +8,12 @@ import { db } from "./auth/firebase-config";
 import { collection, getDocs, query, where } from "firebase/firestore"
 import LoadingSpinner from "./auth/LoadingSpinner";
 
-const Donors = () => {
+const FriendsDonors = () => {
   const { location } = useSelector((state) => state.location);
   const [userData,setUserData] = useState({});
   const [loading, setLoading] = useState(false)
   const [users, setUsers] = useState([])
+  const bloodGroup = localStorage.getItem('bloodGroup')
 
   useEffect(()=>{
     const userId = localStorage.getItem("userId");
@@ -54,7 +55,6 @@ const Donors = () => {
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
     const d = R * c;
-    console.log(d)
     return d;
   }
 
@@ -74,7 +74,7 @@ const Donors = () => {
   
   // console.log("usersData", users)
   // console.log("userData", userData)
-  const canReceiveFrom = bloodDonorPatterns[userData?.bloodGroup];
+  const canReceiveFrom = bloodDonorPatterns[bloodGroup];
   console.log("canReceiveFrom", canReceiveFrom)
 
   users.map((u) => {
@@ -154,4 +154,4 @@ const Donors = () => {
   );
 };
 
-export default Donors;
+export default FriendsDonors;

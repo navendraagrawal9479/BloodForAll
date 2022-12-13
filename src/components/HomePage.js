@@ -7,6 +7,8 @@ import { Button } from "@material-ui/core";
 import AboutCard from "./AboutCard";
 import { Stack } from "@mui/system";
 import DonorsForFriend from "./DonorsForFriend";
+import RecentDonors from "./RecentDonors";
+import ChatBot from "./ChatBot";
 
 const HomePage = (props) => {
   const navigate = useNavigate();
@@ -46,6 +48,7 @@ const HomePage = (props) => {
           direction="row"
           gap={2}
           sx={{ alignItems: "center", justifyContent: "center" }}
+          width={{xs: '100%', md: '90%' }}
         >
           <AboutCard
             picture="blood_drop"
@@ -57,8 +60,18 @@ const HomePage = (props) => {
             title="Immediate Actions"
             message="We provide immediate access to blood donors in case of emergencies."
           />
+          <AboutCard
+            picture="hospital"
+            title="Sending Request"
+            message="Send requests to donor through the help of emails using the send request button in the donors page."
+          />
+          <AboutCard
+            picture="call"
+            title="Call the Donor"
+            message="Directly call the Donors by using the 'Call the Donor' button."
+          />
         </Stack>
-        <Stack direction='row' gap={1} flexWrap='wrap' alignItems='center' justifyContent='center'>
+        <Stack direction='row' gap={1} flexWrap='wrap' alignItems='center' justifyContent='center' sx={{marginTop: '20px'}}>
           <Button
             style={{
               color: "#fff",
@@ -86,10 +99,13 @@ const HomePage = (props) => {
             Search donors for a Friend
           </Button>
         </Stack>
-        {donorForFriend && <Paper elevation={3} style={{padding: '20px'}}>
+        {donorForFriend && <Paper elevation={3} style={{padding: '20px', width: {xs: '280px', md: '700px'}}}>
           <DonorsForFriend />
         </Paper>}
+        <RecentDonors />
+        <ChatBot />
       </Box>
+      
     </>
   );
 };
